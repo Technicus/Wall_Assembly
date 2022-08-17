@@ -2,6 +2,7 @@
 
 
 import cadquery as cq
+import math
 
 # Set board dimentions for dimentional lumbar in metric
 board_dimensions_2x4 = {
@@ -23,8 +24,16 @@ wall_parameters = {
     "bottom_plate_length": 2438, # 8'
     "top_plate_length": 2438, # 8'
     "stud_distribution": 406.4, # 16"
-    "stud_count": 6 # bottom_plate_length / stud_distribution round up
+    "stud_count": 0, # bottom_plate_length / stud_distribution round up
+    "studs": []
 }
+
+wall_parameters["stud_count"] = math.floor(wall_parameters["bottom_plate_length"] / wall_parameters["stud_distribution"])
+studs = []
+for x in range(int(wall_parameters["stud_count"])):
+    wall_parameters["studs"].append("stud_"+str(x))
+#print(int(wall_parameters["stud_count"]))
+print(wall_parameters["studs"])
 
 # Create board sketch profiles.
 board_profile_2x4 = (
@@ -54,14 +63,11 @@ board_bottom_plate = (
     .extrude(wall_parameters["bottom_plate_length"])
 )
 
-# Tag mating edges
-board_wall_stud.faces("<Z").tag("stud_bottom")
-board_bottom_plate.faces(">X").tag("bottom_plate_top")
-
 # Create the wall assembly.
 wall = (
     cq.Assembly()
 )
+
 
 #wall.add(
     #board_bottom_plate,
@@ -77,19 +83,41 @@ wall = (
     #color=cq.Color("brown")
     #)
 
+
+# Tag mating edges
+#board_wall_stud.faces("<Z").tag("stud_bottom")
+#board_bottom_plate.faces(">X").tag("bottom_plate_top")
 board_bottom_plate = board_bottom_plate.rotate((0,0,0), (0,1,0), 90)
 
 wall = (
         cq.Assembly()
-        .add(board_bottom_plate, name="board_bottom_plate", color=cq.Color("green"))
-        .add(board_wall_stud, name="stud0", color=cq.Color("brown"))
-        .add(board_wall_stud, name="stud1", color=cq.Color("brown"))
-        .constrain("board_bottom_plate", "Fixed")
-        .constrain("stud0", "FixedRotation", (0,0,0))
-        .constrain("stud1", "FixedRotation", (0,0,0))
+        .add(board_bottom_plate,
+             #loc=cq.Location(cq.Vector(0, 0, 0), cq.Vector(0, 1, 0), 90),
+             name = "board_bottom_plate",
+             color = cq.Color("green"))
+        for stud in wall_parameters["studs"]:
+            cq.Assembly()
+            .add(board_wall_stud,
+            name = stud,
+            color = cq.Color("brown"))
 
-        .constrain("stud0?stud_bottom", "board_bottom_plate@faces@>Z", "PointInPlane")
-        .constrain("stud1?stud_bottom", "board_bottom_plate@faces@>Z", "PointInPlane")
+        #.add(board_wall_stud,
+             #name="stud0",
+             #color=cq.Color("brown"))
+        #.add(board_wall_stud,
+             #name="stud1",
+             #color=cq.Color("brown"))
+
+        #.constrain("board_bottom_plate", "Fixed")
+        #.constrain("board_bottom_plate", "FixedRotation", (0,0,90))
+        .constrain("stud_0", "FixedRotation", (0, 0, 0))
+        .constrain("stud_1", "FixedRotation", (0, 0, 0))
+
+        #.constrain("stud0?stud_bottom", "board_bottom_plate@faces@>Z", "PointInPlane")
+        #.constrain("stud1?stud_bottom", "board_bottom_plate@faces@>Z", "PointInPlane")
+
+        .constrain("stud0@faces@<Z", "board_bottom_plate@faces@>Z", "PointInPlane")
+        .constrain("stud1@faces@<Z", "board_bottom_plate@faces@>Z", "PointInPlane")
 
         .constrain("board_bottom_plate@faces@<X", "stud0@faces@<X", "PointInPlane", 0)
         .constrain("board_bottom_plate@faces@<X", "stud1@faces@<X", "PointInPlane", 380)
