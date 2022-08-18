@@ -74,7 +74,7 @@ wall = (
 )
 
 board_bottom_plate = board_bottom_plate.rotate((0,0,0), (0,1,0), 90)
-board_top_plate = board_bottom_plate.rotate((0,0,0), (0,1,0), 90)
+board_top_plate = board_top_plate.rotate((0,0,0), (0,1,0), 90)
 
 wall = (
     cq.Assembly()
