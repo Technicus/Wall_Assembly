@@ -23,17 +23,16 @@ wall_parameters = {
     "stud_length": 2908.3, # 114.5"
     "bottom_plate_length": 2438, # 8'
     "top_plate_length": 2438, # 8'
-    "stud_distribution": 406.4, # 16"
-    "stud_count": 0, # bottom_plate_length / stud_distribution round up
+    "stud_spacing": 406.4, # 16"
+    "stud_count": 0, # bottom_plate_length / stud_spacing round up
     "studs": []
 }
 
-wall_parameters["stud_count"] = math.floor(wall_parameters["bottom_plate_length"] / wall_parameters["stud_distribution"])
+wall_parameters["stud_count"] = math.floor(wall_parameters["bottom_plate_length"] / wall_parameters["stud_spacing"]) + 2
 studs = []
 for x in range(int(wall_parameters["stud_count"])):
     wall_parameters["studs"].append("stud_"+str(x))
 #print(int(wall_parameters["stud_count"]))
-print(wall_parameters["studs"])
 
 # Create board sketch profiles.
 board_profile_2x4 = (
@@ -63,69 +62,72 @@ board_bottom_plate = (
     .extrude(wall_parameters["bottom_plate_length"])
 )
 
+board_top_plate = (
+    cq.Workplane()
+    .placeSketch(board_profile_2x4)
+    .extrude(wall_parameters["top_plate_length"])
+)
+
 # Create the wall assembly.
 wall = (
     cq.Assembly()
 )
 
-
-#wall.add(
-    #board_bottom_plate,
-    #loc = cq.Location(cq.Vector(0, 0, 0), cq.Vector(1, 0, 0), 90),
-    #name = "bottom_plate",
-    #color= cq.Color("green")
-    #)
-
-#wall.add(
-    #board_wall_stud,
-    ##loc = cq.Location(cq.Vector(0, 0, 0), cq.Vector(1, 0, 0), 180),
-    #name = "stud",
-    #color=cq.Color("brown")
-    #)
-
-
-# Tag mating edges
-#board_wall_stud.faces("<Z").tag("stud_bottom")
-#board_bottom_plate.faces(">X").tag("bottom_plate_top")
 board_bottom_plate = board_bottom_plate.rotate((0,0,0), (0,1,0), 90)
+board_top_plate = board_bottom_plate.rotate((0,0,0), (0,1,0), 90)
 
 wall = (
-        cq.Assembly()
-        .add(board_bottom_plate,
-             #loc=cq.Location(cq.Vector(0, 0, 0), cq.Vector(0, 1, 0), 90),
-             name = "board_bottom_plate",
-             color = cq.Color("green"))
-        for stud in wall_parameters["studs"]:
-            cq.Assembly()
-            .add(board_wall_stud,
-            name = stud,
-            color = cq.Color("brown"))
-
-        #.add(board_wall_stud,
-             #name="stud0",
-             #color=cq.Color("brown"))
-        #.add(board_wall_stud,
-             #name="stud1",
-             #color=cq.Color("brown"))
-
-        #.constrain("board_bottom_plate", "Fixed")
-        #.constrain("board_bottom_plate", "FixedRotation", (0,0,90))
-        .constrain("stud_0", "FixedRotation", (0, 0, 0))
-        .constrain("stud_1", "FixedRotation", (0, 0, 0))
-
-        #.constrain("stud0?stud_bottom", "board_bottom_plate@faces@>Z", "PointInPlane")
-        #.constrain("stud1?stud_bottom", "board_bottom_plate@faces@>Z", "PointInPlane")
-
-        .constrain("stud0@faces@<Z", "board_bottom_plate@faces@>Z", "PointInPlane")
-        .constrain("stud1@faces@<Z", "board_bottom_plate@faces@>Z", "PointInPlane")
-
-        .constrain("board_bottom_plate@faces@<X", "stud0@faces@<X", "PointInPlane", 0)
-        .constrain("board_bottom_plate@faces@<X", "stud1@faces@<X", "PointInPlane", 380)
-
-        .constrain("board_bottom_plate@faces@>Y", "stud0@faces@>Y", "PointInPlane", 0)
-        .constrain("board_bottom_plate@faces@>Y", "stud1@faces@>Y", "PointInPlane", 0)
+    cq.Assembly()
+    .add(board_bottom_plate,
+    #loc=cq.Location(cq.Vector(0, 0, 0), cq.Vector(0, 1, 0), 90),
+    name = "board_bottom_plate",
+    color = cq.Color("green"))
 )
+
+wall.add(
+    board_top_plate,
+    name = "board_top_plate",
+    color = cq.Color("brown"))
+
+for stud in wall_parameters["studs"]:
+    wall.add(
+        board_wall_stud,
+        name = stud,
+        color = cq.Color("brown"))
+
+#print(wall.objects.keys())
+
+for stud in wall_parameters["studs"]:
+    wall.constrain(stud, "FixedRotation", (0, 0, 0))
+
+print(wall_parameters["studs"])
+for stud in range(len(wall_parameters["studs"][1:-1])):
+    print(wall_parameters["studs"][stud + 1])
+
+for stud in wall_parameters["studs"]:
+    wall.constrain(f"{stud}@faces@<Z", "board_bottom_plate@faces@>Z", "PointInPlane")
+    wall.constrain("board_bottom_plate@faces@>Y", f"{stud}@faces@>Y", "PointInPlane", 0)
+
+wall.constrain(f"{wall_parameters['studs'][0]}@faces@<X", "board_bottom_plate@faces@<X", "PointInPlane")
+wall.constrain(f"{wall_parameters['studs'][-1]}@faces@>X", "board_bottom_plate@faces@>X", "PointInPlane")
+
+print(len(wall_parameters["studs"][1:-1]))
+for stud in range(len(wall_parameters["studs"][1:])):
+    stud_spacing = wall_parameters["stud_spacing"] * stud
+    wall.constrain("board_bottom_plate@faces@<X", f"{wall_parameters['studs'][stud]}@faces@<X", "PointInPlane", stud_spacing)
+    print(stud)
+    print(stud_spacing)
+
+#wall.constrain("board_bottom_plate@faces@<X", "board_top_plate@faces@<X", "PointInPlane")
+wall.constrain(f"{wall_parameters['studs'][0]}@faces@<X", "board_top_plate@faces@<X", "PointInPlane")
+wall.constrain(f"{wall_parameters['studs'][0]}@faces@>Z", "board_top_plate@faces@<Z", "PointInPlane")
+wall.constrain(f"{wall_parameters['studs'][0]}@faces@>Y", "board_top_plate@faces@>Y", "PointInPlane")
+
+#for stud in wall_parameters["studs"]:
+    #wall.constrain(f"{stud}@faces@>Z", "board_top_plate@faces@<Z", "PointInPlane")
+    #wall.constrain("board_bottom_plate@faces@<Z", "board_top_plate@faces@<X", "PointInPlane")
 
 wall.solve()
 
 show_object(wall)
+

@@ -2,16 +2,23 @@
 
 import math
 
-length_baseplate = 100
-distance_between_studs = 9
-number_studs = (length_baseplate / distance_between_studs)
-number_studs_round_up = math.ceil(number_studs)
-number_studs_round_down = math.floor(number_studs)
-print(number_studs)
-print(int(number_studs))
-print(number_studs_round_up)
-print(number_studs_round_down)
+wall_parameters = {
+    "stud_length": 2908.3, # 114.5"
+    "bottom_plate_length": 2438, # 8'
+    "top_plate_length": 2438, # 8'
+    "stud_distribution": 406.4, # 16"
+    "stud_count": 0,
+    "studs": []
+}
+
+wall_parameters["stud_count"] = math.floor(wall_parameters["bottom_plate_length"] / wall_parameters["stud_distribution"]) + 2
 studs = []
-for x in range(int(number_studs)):
-    studs.append("stud_"+str(x))
-print(studs)
+for x in range(int(wall_parameters["stud_count"])):
+    wall_parameters["studs"].append("stud_"+str(x))
+
+print(int(wall_parameters["stud_count"]))
+print(wall_parameters["studs"])
+print(wall_parameters["studs"][1:-1])
+
+for stud in range(len(wall_parameters["studs"][1:-1])):
+    print(wall_parameters["studs"][stud + 1])
