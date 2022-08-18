@@ -32,7 +32,6 @@ wall_parameters["stud_count"] = math.floor(wall_parameters["bottom_plate_length"
 studs = []
 for x in range(int(wall_parameters["stud_count"])):
     wall_parameters["studs"].append("stud_"+str(x))
-#print(int(wall_parameters["stud_count"]))
 
 # Create board sketch profiles.
 board_profile_2x4 = (
@@ -95,14 +94,8 @@ for stud in wall_parameters["studs"]:
         name = stud,
         color = cq.Color("brown"))
 
-#print(wall.objects.keys())
-
 for stud in wall_parameters["studs"]:
     wall.constrain(stud, "FixedRotation", (0, 0, 0))
-
-print(wall_parameters["studs"])
-for stud in range(len(wall_parameters["studs"][1:-1])):
-    print(wall_parameters["studs"][stud + 1])
 
 for stud in wall_parameters["studs"]:
     wall.constrain(f"{stud}@faces@<Z", "board_bottom_plate@faces@>Z", "PointInPlane")
@@ -111,21 +104,15 @@ for stud in wall_parameters["studs"]:
 wall.constrain(f"{wall_parameters['studs'][0]}@faces@<X", "board_bottom_plate@faces@<X", "PointInPlane")
 wall.constrain(f"{wall_parameters['studs'][-1]}@faces@>X", "board_bottom_plate@faces@>X", "PointInPlane")
 
-print(len(wall_parameters["studs"][1:-1]))
 for stud in range(len(wall_parameters["studs"][1:])):
     stud_spacing = wall_parameters["stud_spacing"] * stud
     wall.constrain("board_bottom_plate@faces@<X", f"{wall_parameters['studs'][stud]}@faces@<X", "PointInPlane", stud_spacing)
-    print(stud)
-    print(stud_spacing)
 
-#wall.constrain("board_bottom_plate@faces@<X", "board_top_plate@faces@<X", "PointInPlane")
-wall.constrain(f"{wall_parameters['studs'][0]}@faces@<X", "board_top_plate@faces@<X", "PointInPlane")
-wall.constrain(f"{wall_parameters['studs'][0]}@faces@>Z", "board_top_plate@faces@<Z", "PointInPlane")
-wall.constrain(f"{wall_parameters['studs'][0]}@faces@>Y", "board_top_plate@faces@>Y", "PointInPlane")
-
-#for stud in wall_parameters["studs"]:
-    #wall.constrain(f"{stud}@faces@>Z", "board_top_plate@faces@<Z", "PointInPlane")
-    #wall.constrain("board_bottom_plate@faces@<Z", "board_top_plate@faces@<X", "PointInPlane")
+wall.constrain("board_top_plate@faces@<X",f"{wall_parameters['studs'][0]}@faces@<X",  "PointInPlane")
+wall.constrain("board_top_plate@faces@>X",f"{wall_parameters['studs'][-1]}@faces@>X",  "PointInPlane")
+wall.constrain("board_top_plate@faces@<Z", f"{wall_parameters['studs'][0]}@faces@>Z", "PointInPlane")
+wall.constrain("board_top_plate@faces@>Y", f"{wall_parameters['studs'][0]}@faces@>Y", "PointInPlane")
+wall.constrain("board_top_plate@faces@<Y", f"{wall_parameters['studs'][0]}@faces@<Y", "PointInPlane")
 
 wall.solve()
 
