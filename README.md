@@ -1,5 +1,5 @@
 # Wall_Assembly
-
+This is a utility to generate architectural drawings and 3d models for wall assemblies.
 
 # examples:
 - clear; ./WallConstructor.py --length 8ft --height 120.5in --stud_spacing 16in --stud_profile 2x4 --bottom_plate_profile 2x6 --top_plate_profile 2x4
