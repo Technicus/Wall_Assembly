@@ -17,4 +17,5 @@
 - create dxf and pdf export for 2d view of a render with dimensions to generate architectural drawings
 - do more construction testing with various parameter options
 - refine constraints
+- add additional elements like sheeting, external layers, insulation, and internal layers
 
