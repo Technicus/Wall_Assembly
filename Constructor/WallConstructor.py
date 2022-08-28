@@ -205,7 +205,7 @@ def wall_segment(wall_parameters = None):
 
     wall.solve()
 
-    exporters.export(wall.toCompound(), "../Exports/Models/" + wall_parameters.name + "stl", exporters.ExportTypes.STL)
+    #exporters.export(wall.toCompound(), "../Exports/Models/" + wall_parameters.name + "stl", exporters.ExportTypes.STL)
     exporters.export(wall.toCompound(), "../Exports/Models/" + wall_parameters.name + ".step", exporters.ExportTypes.STEP)
 
     exporters.export(
