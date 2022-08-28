@@ -208,23 +208,24 @@ def wall_segment(wall_parameters = None):
     #exporters.export(wall.toCompound(), "../Exports/Models/" + wall_parameters.name + ".stl", exporters.ExportTypes.STL)
     exporters.export(wall.toCompound(), "../Exports/Models/" + wall_parameters.name + ".step", exporters.ExportTypes.STEP)
 
-    exporters.export(wall.toCompound(), "../Exports/Drawings/" + wall_parameters.name + ".svg", exporters.ExportTypes.SVG)
+    exporters.export(wall.toCompound(), "../Exports/Drawings/" + wall_parameters.name + "_00.svg", exporters.ExportTypes.SVG)
 
     exporters.export(
         wall.toCompound(),
-        "../Exports/Drawings/" + wall_parameters.name + ".svg",
+        "../Exports/Drawings/" + wall_parameters.name + "_01.svg",
         opt={
-            "width": 300,
-            "height": 300,
+            "width": 1920,
+            "height": 1080,
             "marginLeft": 10,
             "marginTop": 10,
-            "showAxes": False,
-            "projectionDir": (0.0, 0.0, 0.5),
-            "strokeWidth": 0.25,
-            "strokeColor": (255, 0, 0),
-            "hiddenColor": (0, 0, 255),
+            #"showAxes": True,
+            "projectionDir": (1.0, 1.0, 1.0),
+            "strokeWidth": 1.0,
+            "strokeColor": (0, 0, 0),
+            "hiddenColor": (0, 0, 0),
             "showHidden": True,
         },
+        #exporters.ExportTypes.SVG,
     )
 
     if "show_object" in locals():

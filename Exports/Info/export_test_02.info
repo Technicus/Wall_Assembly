@@ -1,0 +1,2 @@
+Parameters:
+> ./WallConstructor.py --length 5.5ft --height 90.5in --stud_spacing 16in --stud_profile 2x4 --bottom_plate_profile 2x6 --top_plate_profile 2x4 --name export_test_02
