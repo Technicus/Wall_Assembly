@@ -22,6 +22,7 @@ default_stud_spacing = '0'
 default_profile_stud = '2x4'
 default_profile_bottom_plate = '2x4'
 default_profile_top_plate = '2x4'
+default_name = 'wall'
 
 #def parse_arguments(arguments = argv[1:]):
 def parse_arguments():
@@ -108,6 +109,12 @@ def parse_arguments():
         type = str,
         default = 'STEP'
     )
+    #arguments.add_argument(
+        #"--name",
+        #help="Provide export filename for the wall segment.",
+        #type = str,
+        #default = 'default_name'
+    #)
     return arguments.parse_args()
 
 # A unit conversion function that accepts an input value, units for that value and the desired conversion unit.

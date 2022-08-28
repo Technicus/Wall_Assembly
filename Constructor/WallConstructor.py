@@ -9,6 +9,7 @@ from cadquery import exporters, Sketch, Workplane, Assembly, Color
 from math import floor
 from argparse import ArgumentParser, HelpFormatter, _SubParsersAction, RawTextHelpFormatter, ArgumentError
 from sys import exit, argv, stderr #, stdout
+from os import listdir
 from pprint import pprint
 from WallParameters import validate_wall_parameters, unit_conversion
 
@@ -204,8 +205,26 @@ def wall_segment(wall_parameters = None):
 
     wall.solve()
 
-    exporters.export(wall.toCompound(), "../Exports/Models/wall.stl", exporters.ExportTypes.STL)
-    exporters.export(wall.toCompound(), "../Exports/Models/wall.step", exporters.ExportTypes.STEP)
+    #exporters.export(wall.toCompound(), "../Exports/Models/wall.stl", exporters.ExportTypes.STL)
+    exporters.export(wall.toCompound(), "../Exports/Models/" + wall_parameters.name + ".step", exporters.ExportTypes.STEP)
+    #exporters.export(wall.toCompound(), "../Exports/Models/wall.step", exporters.ExportTypes.STEP)
+
+    exporters.export(
+        wall.toCompound(),
+        "../Exports/Drawings/" + wall_parameters.name + ".svg",
+        opt={
+            "width": 300,
+            "height": 300,
+            "marginLeft": 10,
+            "marginTop": 10,
+            "showAxes": False,
+            "projectionDir": (0.0, 0.0, 0.5),
+            "strokeWidth": 0.25,
+            "strokeColor": (255, 0, 0),
+            "hiddenColor": (0, 0, 255),
+            "showHidden": True,
+        },
+    )
 
     if "show_object" in locals():
         show_object(wall, "wall")
@@ -243,3 +262,15 @@ if __name__ == "__main__":
     print()
 
     wall_segment(wall_parameters)
+
+    with open('../Exports/Info/' + wall_parameters.name + '.info', 'w') as f:
+        f.write("Parameters:\n")
+        f.write("> {}\n".format(' '.join(argv)))
+
+    print("---------------".format())
+    print("> {}".format(' '.join(argv)))
+    print("name: \t{}".format(wall_parameters.name))
+    print("{}".format(listdir('../Exports/Models/')))
+    #print("../Exports/Models/{}.stl".format(wall_parameters.name))
+    #print("../Exports/Models/{}.step".format(wall_parameters.name))
+    print("---------------".format())
