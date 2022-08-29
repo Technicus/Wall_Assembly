@@ -5,6 +5,18 @@ This is a utility to generate architectural drawings and 3d models for wall asse
 - clear; ./WallConstructor.py --length 8ft --height 120.5in --stud_spacing 16in --stud_profile 2x4 --bottom_plate_profile 2x6 --top_plate_profile 2x4
 - clear; ./WallConstructor.py --length 10ft --height 90.5in --stud_spacing 24in --stud_profile 2x4 --bottom_plate_profile 2x6 --top_plate_profile 2x4
 
+# currently works
+- accepting parameters
+- generating boards from dimensional lumbar profiles
+- unit conversion
+- assembling wall frame
+- exporting to stl
+- exporting to step
+
+# current development
+- trying to understand svg export viewing angles
+- trying to add dimensions
+
 # todo:
 - add name to accepted parameters
 - add export file type to parameters
