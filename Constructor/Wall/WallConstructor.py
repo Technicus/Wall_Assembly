@@ -10,10 +10,12 @@ from cadquery import exporters, Sketch, Workplane, Assembly, Color
 from math import floor
 from argparse import ArgumentParser, HelpFormatter, _SubParsersAction, RawTextHelpFormatter, ArgumentError
 from sys import exit, argv, stderr #, stdout
-from os import listdir
 from pprint import pprint
 from WallParameters import validate_wall_parameters, unit_conversion
-import sys, os, subprocess, string
+#import sys, os, subprocess, string
+from subprocess import call
+from pathlib import Path
+from os import listdir, scandir
 
 
 def board_profile(board_dimensions = None):
@@ -88,7 +90,7 @@ def export_evaluation(wall = None):
                     #subprocess.call('convert rgb10.png -pointsize 50 -draw "text 180,180 ' + str(tempo) + '" rgb10-n.png', shell=True)
 
                     #subprocess.call('convert -density 100 ' + file_export + ' ' + file_convert, shell=True)
-                    subprocess.call('convert -density 100 ' + file_export + ' -background Orange label:' + file_label + ' -gravity Center -append ' + file_convert, shell=True)
+                    call('convert -density 100 ' + file_export + ' -background Orange label:' + file_label + ' -gravity Center -append ' + file_convert, shell=True)
                     #-background Orange label:'Faerie Dragon' -gravity Center -append
                     #subprocess.call('convert ' + file_export + ' -background Orange label:' + file_export + ' -gravity Center -append anno_label.jpg')
                 else:
@@ -318,19 +320,39 @@ def wall_segment_construct(wall_parameters = None):
 
     return wall
 
+#def file_check(file_exam = None):
+    #file_to_check = Path(file_exam)
+
+    #if file_to_check.is_file():
+        #print(f'The file {file_exam} exists')
+        #return file_exam +
+    #else:
+        #print(f'The file {file_exam} does not exist')
+        #return file_exam
+
+def file_count(dir_path = None):
+    count = 0
+    #dir_path = r'../../'
+    for path in scandir(dir_path):
+        if path.is_file():
+            count += 1
+    #print('file count:', count)
+    #count = f'{count:02d}'
+    return f'{count:02d}'
 
 def wall_segment_export(wall = None):
+    svg_path = "../../Exports/Drawings/svg/"
     exporters.export(
         wall.toCompound(),
-        "../../Exports/Drawings/svg/" + wall_parameters.name + "_00.svg",
+        svg_path + wall_parameters.name + "_" + file_count(svg_path) + ".svg",
         opt={
             "width": 1920,
             "height": 1080,
             "marginLeft": 10,
             "marginTop": 10,
             #"showAxes": True,
-            #"projectionDir": (0.0, 3.0, 0.0),
-            "projectionDir": (1219.200001206249, 140.6877326965332, 1512.0325927734375),
+            "projectionDir": (0.0, 1, 0.0),
+            #"projectionDir": (1219.200001206249, 140.6877326965332, 1512.0325927734375),
             "strokeWidth": 1.0,
             "strokeColor": (0, 0, 0),
             "hiddenColor": (0, 0, 0),
