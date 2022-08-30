@@ -34,7 +34,7 @@ def parse_arguments():
         "--length",
         help="legth of wall",
         type = str,
-        #default = default_length,
+        default = '8ft',
         nargs = '?'
     )
     arguments.add_argument(
@@ -42,14 +42,14 @@ def parse_arguments():
         help="unit of measurement",
         type = str,
         choices = ['in', 'ft', 'yd', 'mm', 'cm', 'm', 'Default'],
-        default = 'Default',
+        default = 'in',
         nargs = '?'
     )
     arguments.add_argument(
         "--height",
         help="height of wall",
         type = str,
-        #default = default_height,
+        default = '120.5in',
         nargs = '?'
     )
     arguments.add_argument(
@@ -57,22 +57,22 @@ def parse_arguments():
         help="unit of measurement",
         type = str,
         choices=['in', 'ft', 'yd', 'mm', 'cm', 'm', 'Default'],
-        default = 'Default',
+        default = 'in',
         nargs = '?'
     )
     arguments.add_argument(
         "--stud_spacing",
         help="spacing of studs",
         type = str,
-        #default = default_stud_spacing,
+        default = '16in',
         nargs = '?'
     )
     arguments.add_argument(
         "stud_spacing_units",
         help="unit of measurement",
         type = str,
-        choices=['in', 'ft', 'yd', 'mm', 'cm', 'm', 'Default'],
-        default = 'Default',
+        choices = ['in', 'ft', 'yd', 'mm', 'cm', 'm', 'Default'],
+        default = 'in',
         nargs = '?'
     )
     arguments.add_argument(
@@ -80,22 +80,22 @@ def parse_arguments():
         help="profile of stud board",
         type = str,
         choices=['1x1', '2x2', '2x3', '2x4', '2x6', '2x8', '2x10', '2x12', '4x4', 'Default'],
-        default = 'Default',
+        default = '2x4',
         nargs = '?'
     )
     arguments.add_argument(
         "--bottom_plate_profile",
         help="profile of bottom plate board",
         type = str,
-        choices=['1x1', '2x2', '2x3', '2x4', '2x6', '2x8', '2x10', '2x12', '4x4', 'Default'],
-        default = 'Default'
+        choices=['1x1', '2x4', '2x3', '2x4', '2x6', '2x8', '2x10', '2x12', '4x4', 'Default'],
+        default = '2x6'
     )
     arguments.add_argument(
         "--top_plate_profile",
         help="profile of top plate board",
         type = str,
         choices=['1x1', '2x2', '2x3', '2x4', '2x6', '2x8', '2x10', '2x12', '4x4', 'Default'],
-        default = 'Default'
+        default = '2x4'
     )
     arguments.add_argument(
         "--name",
@@ -216,8 +216,12 @@ def parse_units(number_units = None):
 
     return number, unit
 
-#wall_parameters = arguments.parse_args()
+#if "show_object" not in locals():
+    #wall_parameters = arguments.parse_args()
+    #wall_parameters = parse_arguments()
+
 wall_parameters = parse_arguments()
+
 
 #print()
 
@@ -239,6 +243,27 @@ def validate_wall_parameters(wall_parameters = wall_parameters):
     wall_parameters.stud_spacing_units = parse_units(wall_parameters.stud_spacing)[1]
     wall_parameters.stud_spacing = parse_units(wall_parameters.stud_spacing)[0]
     wall_parameters.board_length = {}
+
+    if "show_object" in locals():
+        #parameter_check()
+        #--length 8ft --height 120.5in --stud_spacing 16in --stud_profile 2x4 --bottom_plate_profile 2x6 --top_plate_profile 2x4
+        wall_parameters.length_units = 'ft'
+        wall_parameters.length = '8'
+        wall_parameters.height_units = 'in'
+        wall_parameters.height = '120.5'
+        wall_parameters.stud_spacing_units = 'in'
+        wall_parameters.stud_spacing = '16'
+        wall_parameters.board_length = {}
+
+    #if "show_object" in locals():
+        ##parameter_check()default_height
+        ##--length 8ft --height 120.5in --stud_spacing 16in --stud_profile 2x4 --bottom_plate_profile 2x6 --top_plate_profile 2x4
+        #parse_units(wall_parameters.length)[1] = 'ft'
+        #parse_units(wall_parameters.length)[0] = '8'
+        #parse_units(wall_parameters.height)[1] = 'in'
+        #parse_units(wall_parameters.height)[0] = '120.5'
+        #parse_units(wall_parameters.stud_spacing)[1] = 'in'
+        #parse_units(wall_parameters.stud_spacing)[0] = '16'
 
     #print(parse_units(wall_parameters.length)[0])
     #print(parse_units(wall_parameters.length)[1])

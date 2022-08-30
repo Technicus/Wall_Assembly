@@ -5,6 +5,7 @@
 # clear; ./WallConstructor.py --length 8ft --height 120.5in --stud_spacing 16in --stud_profile 2x4 --bottom_plate_profile 2x6 --top_plate_profile 2x4
 # clear; ./WallConstructor.py --length 10ft --height 90.5in --stud_spacing 24in --stud_profile 2x4 --bottom_plate_profile 2x6 --top_plate_profile 2x4
 
+
 from cadquery import exporters, Sketch, Workplane, Assembly, Color
 from math import floor
 from argparse import ArgumentParser, HelpFormatter, _SubParsersAction, RawTextHelpFormatter, ArgumentError
@@ -13,6 +14,7 @@ from os import listdir
 from pprint import pprint
 from WallParameters import validate_wall_parameters, unit_conversion
 import sys, os, subprocess, string
+
 
 def board_profile(board_dimensions = None):
     if board_dimensions  == '2x4':
@@ -30,6 +32,7 @@ def board_profile(board_dimensions = None):
             "radius": 3.2
         }
         return profile
+
 
 def export_evaluation(wall = None):
 
@@ -121,7 +124,8 @@ def export_evaluation(wall = None):
         #},
     #)
 
-def wall_segment(wall_parameters = None):
+
+def wall_segment_construct(wall_parameters = None):
 
     # Set wall dimentions, material lengths, number of studs.
     # todo: include parameters for openings, corners and additional features.
@@ -141,19 +145,24 @@ def wall_segment(wall_parameters = None):
         #"sheeting": []
     #}
 
-    wall_parameters.stud_count = floor(floor(wall_parameters.length / wall_parameters.stud_spacing) + 1)
+    #wall_parameters.stud_count = floor(floor(wall_parameters.length / wall_parameters.stud_spacing) + 1)
+    wall_parameters.stud_count = floor(wall_parameters.length / wall_parameters.stud_spacing) + 1
     #print(wall_parameters.stud_count)
 
     #print(floor(wall_parameters.length / wall_parameters.stud_spacing) + 2)
     wall_parameters.studs = []
     for x in range(int(wall_parameters.stud_count)):
-        wall_parameters.studs.append("stud_"+str(x))
+        wall_parameters.studs.append("stud_" + str(x))
+
+    print("Studs:")
+    print("stud count: {}".format(wall_parameters.stud_count))
+    #print("wall height: {}".format(wall_parameters.height))
+    #print("top_plate_profile - width: {}".format(board_profile(wall_parameters.top_plate_profile)["width"]))
 
     wall_parameters.board_length["studs"] = wall_parameters.height - board_profile(wall_parameters.top_plate_profile)["width"] - board_profile(wall_parameters.bottom_plate_profile)["width"]
     wall_parameters.board_length["top_plate"] = wall_parameters.length
     wall_parameters.board_length["bottom_plate"] = wall_parameters.length
 
-    print("Studs:")
     print(wall_parameters.studs)
     print()
     print("stud_profile ({})".format(wall_parameters.stud_profile))
@@ -246,7 +255,6 @@ def wall_segment(wall_parameters = None):
         #.extrude(board_profile(wall_parameters.length))
     )
 
-
     # Create the wall assembly.
     wall = (
         Assembly()
@@ -296,36 +304,43 @@ def wall_segment(wall_parameters = None):
 
     wall.solve()
 
-    export_evaluation(wall)
+    #export_evaluation(wall)
 
     ##exporters.export(wall.toCompound(), "../Exports/Models/" + wall_parameters.name + ".stl", exporters.ExportTypes.STL)
     #exporters.export(wall.toCompound(), "../Exports/Models/" + wall_parameters.name + ".step", exporters.ExportTypes.STEP)
 
     #exporters.export(wall.toCompound(), "../Exports/Drawings/" + wall_parameters.name + "_00.svg", exporters.ExportTypes.SVG)
 
-    #exporters.export(
-        #wall.toCompound(),
-        #"../Exports/Drawings/evaluate/" + wall_parameters.name + "_00.svg",
-        #opt={
-            #"width": 1920,
-            #"height": 1080,
-            #"marginLeft": 10,
-            #"marginTop": 10,
-            ##"showAxes": True,
-            #"projectionDir": (5, -5, 1),
-            #"strokeWidth": 1.0,
-            #"strokeColor": (0, 0, 0),
-            #"hiddenColor": (0, 0, 0),
-            #"showHidden": True,
-            ##exporters.ExportTypes.SVG,
-        #},
-    #)
+    #a = self.viewer._get_view()
 
-    if "show_object" in locals():
-        show_object(wall, "wall")
+    #wall.toCompound()
+    #wall.rotate((0,0,1),90)
 
-# Proceed through the main() entrance.
-if __name__ == "__main__":
+    return wall
+
+
+def wall_segment_export(wall = None):
+    exporters.export(
+        wall.toCompound(),
+        "../../Exports/Drawings/svg/" + wall_parameters.name + "_00.svg",
+        opt={
+            "width": 1920,
+            "height": 1080,
+            "marginLeft": 10,
+            "marginTop": 10,
+            #"showAxes": True,
+            #"projectionDir": (0.0, 3.0, 0.0),
+            "projectionDir": (1219.200001206249, 140.6877326965332, 1512.0325927734375),
+            "strokeWidth": 1.0,
+            "strokeColor": (0, 0, 0),
+            "hiddenColor": (0, 0, 0),
+            "showHidden": True,
+            #exporters.ExportTypes.SVG,
+        },
+    )
+
+
+def parameter_check():
     wall_parameters = validate_wall_parameters()
 
     print()
@@ -355,16 +370,34 @@ if __name__ == "__main__":
     print("top_plate_profile: \t{}".format(wall_parameters.top_plate_profile))
     print()
 
-    wall_segment(wall_parameters)
+    #wall_segment(wall_parameters)
 
-    with open('../Exports/Info/' + wall_parameters.name + '.info', 'w') as f:
+    with open('../../Exports/Info/' + wall_parameters.name + '.info', 'w') as f:
         f.write("Parameters:\n")
         f.write("> {}\n".format(' '.join(argv)))
 
     print("---------------".format())
     print("> {}".format(' '.join(argv)))
     print("name: \t{}".format(wall_parameters.name))
-    print("{}".format(listdir('../Exports/Models/')))
+    print("{}".format(listdir('../../Exports/Models/')))
     #print("../Exports/Models/{}.stl".format(wall_parameters.name))
     #print("../Exports/Models/{}.step".format(wall_parameters.name))
     print("---------------".format())
+
+    #return wall_segment()
+    return wall_parameters
+
+
+# Starting from terminal
+if __name__ == "__main__":
+    wall_parameters = parameter_check()
+    wall_segment = wall_segment_construct(wall_parameters)
+    wall_segment_export(wall_segment)
+
+
+# Opening in cq-editor
+if "show_object" in locals():
+    wall_parameters = parameter_check()
+    wall_segment = wall_segment_construct(wall_parameters)
+    show_object(wall_segment, "wall_segment")
+
