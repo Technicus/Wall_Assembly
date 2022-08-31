@@ -18,6 +18,7 @@ This is a utility to generate architectural drawings and 3d models for wall asse
 - trying to add dimensions
 
 # todo:
+- need to integrate accountability for number stud center offset, stud spacing start (before first stud, first stud, after first stud), and stud count past length of wall
 - add name to accepted parameters
 - add export file type to parameters
 - add web interface to accept parameters

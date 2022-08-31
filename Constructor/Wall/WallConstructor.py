@@ -315,8 +315,9 @@ def wall_segment_construct(wall_parameters = None):
 
     #a = self.viewer._get_view()
 
-    #wall.toCompound()
+    wall.toCompound()
     #wall.rotate((0,0,1),90)
+    #wall.rotate((0,1,0),90)
 
     return wall
 
@@ -421,5 +422,6 @@ if __name__ == "__main__":
 if "show_object" in locals():
     wall_parameters = parameter_check()
     wall_segment = wall_segment_construct(wall_parameters)
-    show_object(wall_segment, "wall_segment")
+    #show_object(wall_segment.rotate((0,1,0),45), "wall_segment")
+    show_object(wall_segment.rotate((0,1,0),45))
 
