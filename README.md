@@ -1,7 +1,7 @@
 # Wall_Assembly
 This is a utility to generate architectural drawings and 3d models for wall assemblies.
 
-!!! Currently everything is broken, because the code is being refactored. !!!
+!!! Currently everything is broken, because the code is being refactored !!!
 
 
 # Requires
