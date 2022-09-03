@@ -1,6 +1,21 @@
 # Wall_Assembly
 This is a utility to generate architectural drawings and 3d models for wall assemblies.
 
+!!! Currently everything is broken, because the code is being refactored. !!!
+
+
+# Requires
+- python
+- conda
+- cadquerry
+- cq_warehouse
+
+# Setup
+- bash;
+- source $HOME/miniforge/bin/activate;
+- conda activate cadquery;
+- cq-editor;
+
 # examples:
 - clear; ./WallConstructor.py --length 8ft --height 120.5in --stud_spacing 16in --stud_profile 2x4 --bottom_plate_profile 2x6 --top_plate_profile 2x4
 - clear; ./WallConstructor.py --length 10ft --height 90.5in --stud_spacing 24in --stud_profile 2x4 --bottom_plate_profile 2x6 --top_plate_profile 2x4

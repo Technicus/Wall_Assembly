@@ -10,7 +10,7 @@
 # I am trying to program some input validation to check the arguments, but I am not going to complete this now.
 #from cadquery import exporters, Sketch, Workplane, Assembly, Color
 #from math import floor
-from argparse import ArgumentParser
+from argparse import ArgumentParser, HelpFormatter, _SubParsersAction, RawTextHelpFormatter, ArgumentError
 from pprint import pprint
 from re import findall, split, finditer
 
@@ -220,13 +220,59 @@ def parse_units(number_units = None):
     #wall_parameters = arguments.parse_args()
     #wall_parameters = parse_arguments()
 
-wall_parameters = parse_arguments()
+#wall_parameters = parse_arguments()
 
 
+def parameter_check():
+    wall_parameters = validate_wall_parameters()
+
+    print()
+    print("length: \t\t{}".format(wall_parameters.length))
+    print("length_units: \t\t{}".format(wall_parameters.length_units))
+    print("height: \t\t{}".format(wall_parameters.height))
+    print("height_units: \t\t{}".format(wall_parameters.height_units))
+    print("stud_spacing: \t\t{}".format(wall_parameters.stud_spacing))
+    print("stud_spacing_units: \t{}".format(wall_parameters.stud_spacing_units))
+    print("stud_profile: \t\t{}".format(wall_parameters.stud_profile))
+    print("bottom_plate_profile: \t{}".format(wall_parameters.bottom_plate_profile))
+    print("top_plate_profile: \t{}".format(wall_parameters.top_plate_profile))
+    print()
+
+    (wall_parameters.length, wall_parameters.length_units) = unit_conversion(float(wall_parameters.length), wall_parameters.length_units, 'mm')
+    (wall_parameters.height, wall_parameters.height_units) = unit_conversion(float(wall_parameters.height), wall_parameters.height_units, 'mm')
+    (wall_parameters.stud_spacing, wall_parameters.stud_spacing_units) = unit_conversion(float(wall_parameters.stud_spacing), wall_parameters.stud_spacing_units, 'mm')
+
+    print("length: \t\t{}".format(wall_parameters.length))
+    print("length_units: \t\t{}".format(wall_parameters.length_units))
+    print("height: \t\t{}".format(wall_parameters.height))
+    print("height_units: \t\t{}".format(wall_parameters.height_units))
+    print("stud_spacing: \t\t{}".format(wall_parameters.stud_spacing))
+    print("stud_spacing_units: \t{}".format(wall_parameters.stud_spacing_units))
+    print("stud_profile: \t\t{}".format(wall_parameters.stud_profile))
+    print("bottom_plate_profile: \t{}".format(wall_parameters.bottom_plate_profile))
+    print("top_plate_profile: \t{}".format(wall_parameters.top_plate_profile))
+    print()
+
+    #wall_segment(wall_parameters)
+
+    with open('../../Exports/Info/' + wall_parameters.name + '.info', 'w') as f:
+        f.write("Parameters:\n")
+        f.write("> {}\n".format(' '.join(argv)))
+
+    print("---------------".format())
+    print("> {}".format(' '.join(argv)))
+    print("name: \t{}".format(wall_parameters.name))
+    print("{}".format(listdir('../../Exports/Models/')))
+    #print("../Exports/Models/{}.stl".format(wall_parameters.name))
+    #print("../Exports/Models/{}.step".format(wall_parameters.name))
+    print("---------------".format())
+
+    #return wall_segment()
+    return wall_parameters
 #print()
 
 # Check that units are valid
-def validate_wall_parameters(wall_parameters = wall_parameters):
+def validate_wall_parameters(wall_parameters = None):
     valid_units = ['in', 'ft', 'yd', 'mm', 'cm', 'm', '\'', '\'\'', '\"', 'Default']
     default_unit = 'mm'
     default_length = '0'
