@@ -32,7 +32,8 @@ from cadquery import Sketch, Workplane, exporters, Assembly, Color
 
 
 def board_cut(board_name = 'board', board_profile = '2x4', board_length = (114.5, 'in'), units = 'mm'):
-    """American Softwood Lumber Standard Generator
+    """
+    American Softwood Lumber Standard Generator
 
     Base Class used to create lengths of dimensional lumber
     Args:
