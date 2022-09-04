@@ -1,8 +1,33 @@
 #!/usr/bin/env python3
 # version beta
 
-# Material data
+"""
 
+American Softwood Lumber Standard Generator
+
+name: BoardConstructor.py
+by:   Technicus
+date: September 3st 2022
+
+desc: This python/cadquery code is a component of the larger architectural design project "ProjectDesignBuilder".
+
+license:
+
+    Copyright 2022 Technicus
+
+    Licensed under the Apache License, Version 2.0 (the "License");
+    you may not use this file except in compliance with the License.
+    You may obtain a copy of the License at
+
+        http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+
+"""
 from csv import reader
 from cadquery import Sketch, Workplane, exporters, Assembly, Color
 
@@ -64,6 +89,8 @@ def board_cut(board_name = 'board', board_profile = '2x4', board_length = (114.5
     return (board, board_name, board_profile)
 
 board = board_cut('stud_00', '2x4', (114.5, 'in'))
-print(f"\n[BoardConstructor]\n\tprofile: {board[2]}\n")
+
+print(f"\n[BoardConstructor]\n\t{board[1]}: {board[2]}\n")
+
 if "show_object" in locals():
     show_object(board[0], board[1])
