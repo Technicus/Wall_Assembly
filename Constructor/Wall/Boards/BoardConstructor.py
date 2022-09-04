@@ -85,18 +85,14 @@ def board_cut(board_name_prefix = 'board', board_profile = '2x4', board_length =
                         for col in row:
                             board_profile.append(row[count])
                             count += 1
-                        #print(f'  board_profile:\n    {board_profile}\n')
 
     # Unit conversion
-    #unit_conversion(length = float(0), in_units = None, out_units = None)
     board_length = unit_conversion(board_length[0], board_length[1], units)
     board_profile[1], board_profile[4] = unit_conversion(float(board_profile[1]), board_profile[4], units)
     board_profile[2], board_profile[4] = unit_conversion(float(board_profile[2]), board_profile[4], units)
     board_profile[3], board_profile[4] = unit_conversion(float(board_profile[3]), board_profile[4], units)
-    #board_profile[4] = 'mm'
 
     for count in range(int(board_count)):
-        #print(f'{count}')
         board_sketch.append(Sketch())
         board_sketch[count] = (
             Sketch()
@@ -114,6 +110,5 @@ def board_cut(board_name_prefix = 'board', board_profile = '2x4', board_length =
 
         board_names.append('')
         board_names[count] = board_name_prefix + '_' + str(count)
-        #print(f'{str(board_names[count])}')
 
     return (boards, board_names, board_profile, board_length)
