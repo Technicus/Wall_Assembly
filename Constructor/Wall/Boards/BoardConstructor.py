@@ -8,7 +8,7 @@ name: BoardConstructor.py
 by:   Technicus
 date: September 3st 2022
 
-desc: This python/cadquery code is a component of the larger architectural design project "ProjectDesignBuilder".
+desc: This python/cadquery code is a component of the larger architectural development concept, "ProjectDesignBuilder".
 
 license:
     Copyright 2022 Technicus
@@ -60,6 +60,7 @@ def board_cut(board_name = 'board', board_profile = '2x4', board_length = (114.5
         Add extension to modify ends with compound miter cuts
         Add extension to modify profiles
         Add extension to add notches, holes, or arbitrary cut outs
+        Refine ocumentation
     """
 
     board_sketch = Sketch()
