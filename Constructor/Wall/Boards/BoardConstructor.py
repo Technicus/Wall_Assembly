@@ -6,7 +6,7 @@ American Softwood Lumber Standard Generator
 
 name: BoardConstructor.py
 by:   Technicus
-date: September 3st 2022
+date: September 1st 2022
 
 desc: This python/cadquery code is a component of the larger architectural development concept, "ProjectDesignBuilder".
 
@@ -30,8 +30,10 @@ license:
 from csv import reader
 from cadquery import Sketch, Workplane, exporters, Assembly, Color
 
+from Calculations.UnitConversion import unit_conversion
 
-def board_cut(board_name = 'board', board_profile = '2x4', board_length = (114.5, 'in'), units = 'mm'):
+
+def board_cut(board_name_prefix = 'board', board_profile = '2x4', board_length = (114.5, 'in'), units = 'mm', board_count = 1):
     """
     Cut Dimenstional Lumber Generator
 
@@ -49,51 +51,69 @@ def board_cut(board_name = 'board', board_profile = '2x4', board_length = (114.5
         tuple of Workplane object representing extruded board of selected profile, board name, and board profile data.
 
     TODO:
-        Reimplement as a class
-        Add unit conversion
-        Implement error checking
-        Add tests
-        Output log data
-        Possibly add more lumber profiles to csv data
-        Add parameter for color
-        Add parameters for placement: position, rotation, angle, etc.
-        Add extension to modify ends with compound miter cuts
-        Add extension to modify profiles
-        Add extension to add notches, holes, or arbitrary cut outs
-        Add export/view option
-        Refine documentation
+        (🗸) Add parameters to create multiple boards with single call to function
+        (🗸) Add unit conversion
+        (☐) Add parameters for placement: position, rotation, angle, etc.
+        (☐) Distribute multiple boards
+        (☐) Add extension to modify ends with compound miter cuts
+        (☐) Add extension to modify profiles
+        (☐) Add extension to add notches, holes, or arbitrary cut outs
+        (☐) Add export/view option
+        (☐) Make path for 'material_profiles_lumber_boards.csv' dynamic
+        (☐) Implement error checking
+        (☐) Add tests
+        (☐) Output log data
+        (☐) Reimplement as a class
+        (☐) Possibly add more lumber profiles to csv data
+        (☐) Add parameter for color
+            ! AttributeError: 'Workplane' object has no attribute 'Color'
+        (☐) Refine documentation
     """
 
-    board_sketch = Sketch()
-    board_workplane = Workplane()
+    board_sketch = []
+    boards = []
+    board_names = []
     board_obj = None
 
-    with open('./material_profiles_lumber_boards.csv') as lumber_profiles:
+    with open('./Boards/material_profiles_lumber_boards.csv') as lumber_profiles:
             lumber_profile = reader(lumber_profiles, delimiter=';')
             for row in lumber_profile:
                 if row:
                     if row[0] == board_profile:
-                        #return (row[0], float(row[1]), float(row[2]), float(row[3]), row[4])
-                        board_profile = (row[0], float(row[1]), float(row[2]), float(row[3]), row[4])
+                        board_profile = []
+                        count = 0
+                        for col in row:
+                            board_profile.append(row[count])
+                            count += 1
+                        #print(f'  board_profile:\n    {board_profile}\n')
 
-    board_sketch = (
-        Sketch()
-        .rect(board_profile[1], board_profile[2])
-        .vertices()
-        .fillet(board_profile[3])
-    )
+    # Unit conversion
+    #unit_conversion(length = float(0), in_units = None, out_units = None)
+    board_length = unit_conversion(board_length[0], board_length[1], units)
+    board_profile[1], board_profile[4] = unit_conversion(float(board_profile[1]), board_profile[4], units)
+    board_profile[2], board_profile[4] = unit_conversion(float(board_profile[2]), board_profile[4], units)
+    board_profile[3], board_profile[4] = unit_conversion(float(board_profile[3]), board_profile[4], units)
+    #board_profile[4] = 'mm'
 
-    board = (
-        Workplane()
-        .placeSketch(board_sketch)
-        .extrude(board_length[0])
-    )
+    for count in range(int(board_count)):
+        #print(f'{count}')
+        board_sketch.append(Sketch())
+        board_sketch[count] = (
+            Sketch()
+            .rect(board_profile[1], board_profile[2])
+            .vertices()
+            .fillet(board_profile[3])
+        )
 
-    return (board, board_name, board_profile)
+        boards.append(Workplane())
+        boards[count] = (
+            Workplane()
+            .placeSketch(board_sketch[count])
+            .extrude(board_length[0])
+        )
 
-board = board_cut('stud_00', '2x4', (114.5, 'in'))
+        board_names.append('')
+        board_names[count] = board_name_prefix + '_' + str(count)
+        #print(f'{str(board_names[count])}')
 
-print(f"\n[BoardConstructor]\n\t{board[1]}: {board[2]}\n")
-
-if "show_object" in locals():
-    show_object(board[0], board[1])
+    return (boards, board_names, board_profile, board_length)
