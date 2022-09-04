@@ -2,7 +2,6 @@
 # version beta
 
 """
-
 American Softwood Lumber Standard Generator
 
 name: BoardConstructor.py
@@ -12,7 +11,6 @@ date: September 3st 2022
 desc: This python/cadquery code is a component of the larger architectural design project "ProjectDesignBuilder".
 
 license:
-
     Copyright 2022 Technicus
 
     Licensed under the Apache License, Version 2.0 (the "License");
@@ -26,8 +24,9 @@ license:
     WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
     See the License for the specific language governing permissions and
     limitations under the License.
-
 """
+
+
 from csv import reader
 from cadquery import Sketch, Workplane, exporters, Assembly, Color
 
