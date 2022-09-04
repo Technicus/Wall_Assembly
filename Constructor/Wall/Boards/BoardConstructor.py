@@ -112,4 +112,6 @@ def board_cut(board_name_prefix = 'board', board_profile = '2x4', board_length =
         board_names.append('')
         board_names[count] = board_name_prefix + '_' + str(count)
 
+    #boards[0].move(-100, 0)
+
     return (boards, board_names, board_profile, board_length)

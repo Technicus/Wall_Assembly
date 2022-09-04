@@ -42,7 +42,11 @@ if __name__ == "__main__":
 # Opening in cq-editor
 if "show_object" in locals():
     boards = cut_boards()
+    #boards[0][0].move(-100, 0)
+    #boards[0][1].move(100, 0)
+    show_object(boards[0][0])
     show_object(boards[0][1])
     report_boards(boards)
+    print(f'{boards}')
 
 
