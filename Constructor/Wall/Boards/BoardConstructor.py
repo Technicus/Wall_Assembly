@@ -33,9 +33,10 @@ from cadquery import Sketch, Workplane, exporters, Assembly, Color
 
 def board_cut(board_name = 'board', board_profile = '2x4', board_length = (114.5, 'in'), units = 'mm'):
     """
-    American Softwood Lumber Standard Generator
+    Cut Dimenstional Lumber Generator
 
-    Base Class used to create lengths of dimensional lumber
+    Function for creating lengths of dimensional lumber at given length.
+
     Args:
         name (str): given name for board
         profile (str): board profile - e.g. "2x4", the profile is read from the CSV file which brings in depth and width information
@@ -55,10 +56,10 @@ def board_cut(board_name = 'board', board_profile = '2x4', board_length = (114.5
         Output log data
         Possibly add more lumber profiles to csv data
         Add parameter for color
-        Add parameter for placement
-        Add parameter for position
-        Add parameter for rotation
-        Add parameter for angle
+        Add parameters for placement: position, rotation, angle, etc.
+        Add extension to modify ends with compound miter cuts
+        Add extension to modify profiles
+        Add extension to add notches, holes, or arbitrary cut outs
     """
 
     board_sketch = Sketch()
