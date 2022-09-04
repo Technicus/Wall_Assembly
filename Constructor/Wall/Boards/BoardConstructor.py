@@ -60,7 +60,8 @@ def board_cut(board_name = 'board', board_profile = '2x4', board_length = (114.5
         Add extension to modify ends with compound miter cuts
         Add extension to modify profiles
         Add extension to add notches, holes, or arbitrary cut outs
-        Refine ocumentation
+        Add export/view option
+        Refine documentation
     """
 
     board_sketch = Sketch()
