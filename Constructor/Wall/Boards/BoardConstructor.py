@@ -53,6 +53,7 @@ def board_cut(board_name_prefix = 'board', board_profile = '2x4', board_length =
     TODO:
         (🗸) Add parameters to create multiple boards with single call to function
         (🗸) Add unit conversion
+             - It has been added but needs improvement
         (☐) Add parameters for placement: position, rotation, angle, etc.
         (☐) Distribute multiple boards
         (☐) Add extension to modify ends with compound miter cuts

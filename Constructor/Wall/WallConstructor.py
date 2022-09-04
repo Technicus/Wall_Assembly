@@ -42,7 +42,7 @@ if __name__ == "__main__":
 # Opening in cq-editor
 if "show_object" in locals():
     boards = cut_boards()
-    show_object(boards[0], boards[1])
+    show_object(boards[0][1])
     report_boards(boards)
 
 
