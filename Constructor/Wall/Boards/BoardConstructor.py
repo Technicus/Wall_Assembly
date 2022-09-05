@@ -33,7 +33,7 @@ from cadquery import Sketch, Workplane, exporters, Assembly, Color
 from Calculations.UnitConversion import unit_conversion
 
 
-def board_cut(board_name_prefix = 'board', board_profile = '2x4', board_length = (114.5, 'in'), units = 'mm', board_count = 1):
+def board_cut(board_name_prefix = 'board', board_profile = '2x4', board_length = (114.5, 'in'), units = 'mm', board_count = 1, distribution = (16, 'in')):
     """
     Cut Dimenstional Lumber Generator
 
@@ -53,8 +53,9 @@ def board_cut(board_name_prefix = 'board', board_profile = '2x4', board_length =
     TODO:
         (🗸) Add parameters to create multiple boards with single call to function
         (🗸) Add unit conversion
-             - It has been added but needs improvement
-        (☐) Add parameters for placement: position, rotation, angle, etc.
+                - It has been added but needs improvement
+        (-) Add parameters for placement: position, rotation, angle, etc.
+                - Partially added . . . when multiple boards are created they are evenly spaced apart with the 'distribution' parameter
         (☐) Distribute multiple boards
         (☐) Add extension to modify ends with compound miter cuts
         (☐) Add extension to modify profiles
@@ -112,6 +113,60 @@ def board_cut(board_name_prefix = 'board', board_profile = '2x4', board_length =
         board_names.append('')
         board_names[count] = board_name_prefix + '_' + str(count)
 
-    #boards[0].move(-100, 0)
+    # This section of code is to distribute multiple boards when they are created.
+    # Currently this section is an undocumented messy tangle of code, and there is probably a much simpler way to do this.
+    # This section needs to be dramatically improved!
+    # So the code checks if the number of boards being created is even or odd.
+    # Then it evenly distributes them along the x axis.
+    # If it is an even number the center board positioned at the 0 point along the x axis.
+    # If it is an odd number of boards being created, the two center most boards are equadistant the 0 point on the x axis.
+    print(f'\nBoardConstructor:')
+    for count in range(0, len(boards)):
+        print(f'  {boards[count]}')
+
+    if (board_count % 2) == 0:
+        center_offset = (distribution[0] / 2,  distribution[1])
+        center_translate = center_offset[0]
+        print(f'\n   -- center_offset even: {center_offset}')
+        print(f'   -- center_translate : {center_translate}')
+        print(f'   -- board_count even: {board_count % 2}')
+        print(f'   -- distribution: {(distribution[0],  distribution[1])}')
+
+        placement_count_down = (int(board_count) / 2)
+        print(f'      placement_count: {int(placement_count_down)}')
+
+        placement = ((((distribution[0]) - (center_translate)) * -1) / 2) + 4
+        for count in range(int(placement_count_down) - 1, -1, -1):
+            print(f'         count: {count}, translate: {center_translate}, placement: {placement - center_translate}')
+            boards[count] = boards[count].translate((placement - center_translate, 0))
+            placement = (placement + int(distribution[0]) * -1)
+
+        placement = ((distribution[0]) + (center_translate / 2)) - 4
+        for count in range(int(placement_count_down), int(board_count), 1):
+            print(f'         count: {count}, translate: {center_translate}, placement: {placement - center_translate}')
+            boards[count] = boards[count].translate((placement - center_translate, 0))
+            placement = (placement + int(distribution[0]))
+
+    else:
+        center_offset = (distribution[0],  distribution[1])
+        print(f'\n   -- center_offset odd: {center_offset}')
+        print(f'   -- board_count odd: {board_count % 2}')
+        placement_count_down = (int(board_count) / 2)
+        print(f'      placement_count: {int(placement_count_down)}')
+
+        placement = distribution[0] * -1
+        for count in range(int(placement_count_down) - 1, -1, -1):
+            print(f'         count: {count}, translate: {center_offset}, placement: {placement}')
+            boards[count] = boards[count].translate((placement, 0))
+            placement = placement + int(distribution[0]) * -1
+
+        print(f'      center_count: {int(placement_count_down)}, translate: 0')
+        boards[int(placement_count_down)] = boards[int(placement_count_down)].translate((0, 0))
+
+        placement = distribution[0]
+        for count in range(int(placement_count_down) + 1 , int(board_count), 1):
+            print(f'         count: {count}, translate: {center_offset}, placement: {placement}')
+            boards[count] = boards[count].translate((placement, 0))
+            placement = placement + int(distribution[0])
 
     return (boards, board_names, board_profile, board_length)

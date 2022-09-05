@@ -26,7 +26,7 @@ from os import listdir, scandir
 
 
 def cut_boards():
-    return board_cut('stud', '2x4', (114.5, 'in'), board_count = 2, units = 'in')
+    return board_cut('stud', '2x4', (114.5, 'in'), board_count = 5, units = 'in', distribution = (16, 'in'))
 
 
 def report_boards(boards = None):
@@ -42,10 +42,15 @@ if __name__ == "__main__":
 # Opening in cq-editor
 if "show_object" in locals():
     boards = cut_boards()
-    #boards[0][0].move(-100, 0)
+    #boards[0][0] = boards[0][0].translate((-100, 0))
     #boards[0][1].move(100, 0)
-    show_object(boards[0][0])
-    show_object(boards[0][1])
+
+    print(f'\nRender boards:')
+    for count in range(0, len(boards[0])):
+        show_object(boards[0][count])
+
+    #show_object(boards[0][0])
+    #show_object(boards[0][1])
     report_boards(boards)
     print(f'{boards}')
 
